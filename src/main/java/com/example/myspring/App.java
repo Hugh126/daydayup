@@ -9,6 +9,10 @@ public class App
     public static void main( String[] args )
     {
         SpringApplication.run(App.class, args);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("----Thread ShutDown Hook-----");
+        }));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.myspring.hello;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/hello")
-public class HelloController {
+public class HelloController implements DisposableBean {
 
     /**
      * 使用PathVariable 接受参数
@@ -26,5 +27,11 @@ public class HelloController {
     String sayHello2(@RequestParam("name") String name) {
         return "hehe  " + name;
     }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("---------DisposableBean destroy-----");
+    }
+
 
 }
