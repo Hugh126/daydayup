@@ -92,7 +92,13 @@ public class StreamTest {
 
 		System.out.println(Arrays.asList(1, 2, 3).stream().collect(Collectors.summingInt(i -> i)).intValue());
 
+	}
 
+
+	@Test
+	public void test4() {
+		String[] arr = new String[] {"aa", "bb", "cc"};
+		System.out.println(Stream.of(arr, arr).flatMap(Arrays::stream).collect(Collectors.toList()));
 	}
 
 
