@@ -1,10 +1,14 @@
 package algoTest;
 
+import algo.a5_array.Array;
+import com.google.common.collect.Lists;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -12,8 +16,8 @@ import java.util.stream.Stream;
  */
 public class MergeSortTest {
 
-    int[] arr1 = {3, 5, 7, 9};
-    int[] arr2 = {2, 4, 8, 10};
+    int[] arr1 = {1, 3, 5, 7, 9};
+    int[] arr2 = {2, 4, 8, 10,12, 17};
     int left = arr1.length;
     int right = arr2.length;
 
@@ -38,16 +42,8 @@ public class MergeSortTest {
 
     @Test
     void test1() {
-        int[] a = sort();
-        for(int i=0;i<a.length;i++) {
-            System.out.println(a[i]);
-        }
+        int[] arr = sort();
+        System.out.println(IntStream.of(arr).mapToObj(a -> "" + a).collect(Collectors.joining(",", "[", "]")));
     }
 
-    @Test
-    void test4() {
-        List<Integer> financeCostTypeMenuClassIdsForByMenu = Stream.of(29, 14, 49, 47, 31, 35, 57, 33, 8, 58, 30059, 11, 12, 10, 26, 38).collect(Collectors.toList());
-        String menuClassIds = financeCostTypeMenuClassIdsForByMenu.stream().map(item -> String.valueOf(item)).collect(Collectors.joining(",", "(", ")"));
-        System.out.println(menuClassIds);
-    }
 }
