@@ -1,6 +1,7 @@
 package simple;
 
 
+import com.example.myspring.entity.Stu;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -72,5 +73,12 @@ public class FinalTest {
 
     }
 
+    @Test
+    public void test3() {
+        System.out.println(System.identityHashCode(127));
+        System.out.println(System.identityHashCode(Integer.valueOf(127)));
+        System.out.println(System.identityHashCode(new Stu()));
+        System.out.println(System.identityHashCode(new Stu()));
 
+    }
 }
