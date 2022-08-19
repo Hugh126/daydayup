@@ -1,5 +1,10 @@
 package multiThread.concurrent;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import com.xiaoju.uemc.tinyid.client.utils.TinyId;
+
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -34,17 +39,10 @@ class Worker implements Runnable {
         }
 
         private void doWork() {
+            Long id = TinyId.nextId("test");
+            System.out.println("线程:" +Thread.currentThread().getId() + " current id is: " + id);
 
-            String name = Thread.currentThread().getName();
-
-            System.out.println(String.format("thread %s工作开始……", name));
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println(String.format("thread %s工作完成……", name));
+//            HttpResponse response = HttpUtil.createGet("https://erpapi.helensbar.com/coupon/generateCouponForUser?time=1660270304905&authtoken=api4erp_bac12&p=1&platform=1&st=23nOOGda&uid=opaQk1qgbmHHOiF7E9MIeuMyXCZA&couponId=842314&openId=oFsO31bEhTEM3HPfQpFtgo3HZRGc&platform=1&source=html&ApiHolder=&lang=zh&ver=2.0").execute();
+//            System.out.println("线程:" +Thread.currentThread().getId() + " 结果" + response.getStatus() + "返回" + response.body());
         }
     }
