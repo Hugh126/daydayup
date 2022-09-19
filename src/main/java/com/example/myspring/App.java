@@ -2,6 +2,7 @@ package com.example.myspring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 public class App 
@@ -10,9 +11,7 @@ public class App
     {
         SpringApplication.run(App.class, args);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("----Thread ShutDown Hook-----");
-        }));
+
     }
 
 }

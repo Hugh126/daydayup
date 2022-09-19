@@ -7,9 +7,12 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
+
+/**
+ * 一组任务分开异步执行然后汇总
+ */
 @Slf4j
 public class CompletableFutureTest {
 
