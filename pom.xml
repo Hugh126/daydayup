@@ -25,6 +25,14 @@
 
   <dependencies>
 
+    <!--查看对象头工具-->
+    <dependency>
+      <groupId>org.openjdk.jol</groupId>
+      <artifactId>jol-core</artifactId>
+      <version>0.9</version>
+    </dependency>
+
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -53,6 +61,12 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
+    </dependency>
+
+    <!-- thymeleaf依赖 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
 
 
@@ -90,11 +104,6 @@
     </dependency>
 
 
-    <dependency>
-      <groupId>com.xiaoju.uemc.tinyid</groupId>
-      <artifactId>tinyid-client</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
-    </dependency>
 
 
   </dependencies>
