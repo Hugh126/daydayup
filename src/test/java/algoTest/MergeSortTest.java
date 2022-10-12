@@ -1,10 +1,12 @@
 package algoTest;
 
 import algo.a5_array.Array;
+import cn.hutool.json.JSONUtil;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,4 +48,18 @@ public class MergeSortTest {
         System.out.println(IntStream.of(arr).mapToObj(a -> "" + a).collect(Collectors.joining(",", "[", "]")));
     }
 
+    @Test
+    void flatmap() {
+        ArrayList<ArrayList<String>> lists = Lists.newArrayList(Lists.newArrayList("day1"), Lists.newArrayList("day2"), Lists.newArrayList("day3"));
+        List<String> collect = lists.stream().flatMap(list -> list.stream()).collect(Collectors.toList());
+        System.out.println(JSONUtil.toJsonStr(collect));
+    }
+
+
+    @Test
+    void wordCount() {
+        String[] words = new String[]{"Hello","World"};
+        long count = Arrays.stream(words).map(word -> word.split("")).flatMap(Arrays::stream).count();
+        System.out.println(count);
+    }
 }
