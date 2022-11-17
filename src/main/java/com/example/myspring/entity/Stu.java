@@ -1,6 +1,6 @@
 package com.example.myspring.entity;
 
-public class Stu {
+public class Stu extends BaseEntity {
 
     private static boolean flag = false;
 
@@ -57,6 +57,10 @@ public class Stu {
         flag = false;
     }
 
+    public static void main(String[] args) {
+        System.out.println(new Stu().getTaskName());
+        new Stu().ttt();
+    }
 
 
 

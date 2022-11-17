@@ -12,9 +12,17 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -26,6 +34,7 @@ import static org.junit.Assert.assertThat;
  * @Description
  * @Date 2022/1/21
  */
+@Slf4j
 public class MapTest {
 
     @Test
@@ -120,11 +129,21 @@ public class MapTest {
         };
         Multimap<Integer, String> groups = Multimaps.index(names, func);
 
-        System.out.println(groups.get(4));
+        System.out.println(groups);
         assertThat(groups.get(3), containsInAnyOrder("Tom"));
         assertThat(groups.get(4), containsInAnyOrder("John", "Adam"));
     }
 
-
+    @Test
+    public void test5() throws InterruptedException {
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("longPolling-timeout-checker-%d").build();
+        ScheduledExecutorService timeoutChecker = new ScheduledThreadPoolExecutor(1, threadFactory);
+        log.warn(LocalDateTime.now().toString());
+        timeoutChecker.schedule( () -> {
+            log.warn("--task run--");
+        }, 1000, TimeUnit.MILLISECONDS);
+        log.warn(LocalDateTime.now().toString());
+        TimeUnit.SECONDS.sleep(3);
+    }
 
 }
