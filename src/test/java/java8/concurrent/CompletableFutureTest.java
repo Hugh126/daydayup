@@ -1,18 +1,23 @@
 package java8.concurrent;
 
+import algoTest.BSearch;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.StopWatch;
 
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-
-/**
- * 一组任务分开异步执行然后汇总
- */
 @Slf4j
 public class CompletableFutureTest {
 
@@ -75,6 +80,60 @@ public class CompletableFutureTest {
     }
 
 
+    static class TT{
+        private int cnt = 0;
 
+        public int getCnt() {
+            return cnt;
+        }
+
+        public void setCnt(int cnt) {
+            this.cnt = cnt;
+        }
+    }
+
+
+    /**
+     * CompletableFuture c1 c2  -> all of
+     * @throws InterruptedException
+     */
+    @Test
+    public void test2() throws InterruptedException {
+        TT tt = new TT();
+        AtomicInteger ato = new AtomicInteger();
+        List<Integer> collect = IntStream.range(0, 10000).mapToObj(Integer::new).collect(Collectors.toList());
+        Supplier<List<Integer>> task = () -> {
+            List<Integer> success = new ArrayList<>();
+            collect.forEach(item -> {
+                ato.getAndAdd(1);
+                tt.setCnt(tt.getCnt() + 1);
+                if (item%100==0) {
+                    success.add(item);
+                }
+            });
+            return success;
+        };
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        final List<Integer> end = new ArrayList<>();
+        Consumer consumer = (success) -> {
+            List<Integer> list = (List<Integer>) success;
+            log.warn("listSize=" + list.size());
+            end.addAll(list);
+        };
+        try {
+            CompletableFuture<List<Integer>> c1 = CompletableFuture.supplyAsync(task).thenAccept(consumer);
+            CompletableFuture<List<Integer>> c2 = CompletableFuture.supplyAsync(task).thenAccept(consumer);
+            CompletableFuture.allOf(c1, c2).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        stopWatch.stop();
+        log.warn(stopWatch.prettyPrint());
+        System.out.println("END=" + ato.get());
+        System.out.println("TT = " + tt.getCnt());
+        log.warn(end.stream().map(String::valueOf).collect(Collectors.joining(",")));
+    }
 
 }
