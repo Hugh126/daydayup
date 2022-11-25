@@ -1,7 +1,6 @@
-package simple;
+package redis;
 
-import cn.hutool.json.JSONUtil;
-import org.apache.commons.lang.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
@@ -9,7 +8,14 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Pipeline;
 
-public class JedisTest {
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * http://www.redis.cn/topics/pipelining.html
+ */
+@Slf4j
+public class PipelineTest {
 
     JedisPool jedisPool;
 
@@ -48,20 +54,28 @@ public class JedisTest {
             pipe.sync(); //将封装后的PIPE一次性发给redis
             long endPipe = System.currentTimeMillis();
             System.out.println("使用Pipleline插入" + redis.dbSize() + "数据, 花费时间:" + (endPipe- startPipe) + " ms");
+        }finally {
+            Jedis redis2 = jedisPool.getResource();
+            redis2.flushDB();
+            redis2.close();
         }
     }
 
-    @Test
-    public void bitMapTest() {
-        String[] arr0 = "menu".split("\\.");
-        String[] arr1 = "menu.class".split("\\.");
-        String[] arr = "menu.class.type".split("\\.");
-        System.out.println(JSONUtil.toJsonStr(arr0));
-        System.out.println(JSONUtil.toJsonStr(arr1));
-        System.out.println(JSONUtil.toJsonStr(arr));
 
-        System.out.println(StringUtils.substringAfter("menu.class.type", "."));
-        System.out.println(StringUtils.substringBefore("menu", "."));
-        System.out.println(StringUtils.substringBefore("menu.class.type", "."));
+    private List<Integer> getStepList(int start, int end, int step) {
+        List<Integer> list = new ArrayList<>();
+        int k = (end - start)/step;
+        for (int i=1; i<=k;i++) {
+            list.add(start + i*step);
+        }
+        list.add(0, start);
+        list.add(end);
+        return list;
+    }
+
+    @Test
+    public void test3() {
+        List<Integer> stepList = getStepList(80000000, 99700190, 10000);
+        System.out.println(stepList.size());
     }
 }
