@@ -96,6 +96,11 @@
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.example</groupId>
+      <artifactId>mystarter</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 
   </dependencies>
 
