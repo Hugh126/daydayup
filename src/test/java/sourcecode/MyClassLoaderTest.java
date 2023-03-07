@@ -1,10 +1,21 @@
 package sourcecode;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.json.JSONNull;
+import cn.hutool.json.JSONUtil;
 import com.example.myspring.entity.Stu;
 import org.junit.jupiter.api.Test;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.math.BigDecimal;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 class MyClassLoaderTest {
+
 
     @Test
     void classForName() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
@@ -18,4 +29,17 @@ class MyClassLoaderTest {
         Assert.isTrue(stuClass.equals(Stu.class));
     }
 
+    private void foo() {
+        String[] objects = Stream.of("a", "b").toArray(String[]::new);
+        System.out.println(objects);
+    }
+
+
+    @Test
+    void test3() {
+        MemoryMXBean memorymbean = ManagementFactory.getMemoryMXBean();
+        MemoryUsage usage = memorymbean.getHeapMemoryUsage();
+        MemoryUsage nonHeapMemoryUsage = memorymbean.getNonHeapMemoryUsage();
+        System.out.println(JSONUtil.toJsonPrettyStr(usage));
+    }
 }

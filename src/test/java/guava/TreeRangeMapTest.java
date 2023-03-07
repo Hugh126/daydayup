@@ -1,9 +1,12 @@
 package guava;
 
+import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 import org.junit.jupiter.api.Test;
+
+import java.util.Date;
 
 
 public class TreeRangeMapTest {
@@ -27,6 +30,16 @@ public class TreeRangeMapTest {
 
     }
 
+
+    @Test
+    void test2() {
+        RangeMap<Date, String> rangeMap = TreeRangeMap.create();
+        rangeMap.put(Range.closed(DateUtil.parse("20210101"), DateUtil.parse("20210601")), "1");
+        rangeMap.put(Range.closed(DateUtil.parse("20210501"), DateUtil.parse("20210830")), "2");
+        String s = rangeMap.get(DateUtil.parse("20210510"));
+        System.out.println("s=" + s);
+        System.out.println(rangeMap.span());
+    }
 }
 
 

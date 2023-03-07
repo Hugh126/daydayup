@@ -30,6 +30,7 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -39,6 +40,12 @@
           <artifactId>junit-vintage-engine</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- 引入 redis 依赖 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
 
 
@@ -95,6 +102,20 @@
       <artifactId>tinyid-client</artifactId>
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>2.9.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--查看对象头工具-->
+    <dependency>
+      <groupId>org.openjdk.jol</groupId>
+      <artifactId>jol-core</artifactId>
+      <version>0.9</version>
+    </dependency>
+
 
     <dependency>
       <groupId>org.example</groupId>

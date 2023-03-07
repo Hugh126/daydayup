@@ -15,7 +15,7 @@ public class ConCurrentCounterTest {
         CountDownLatch done = new CountDownLatch(doneNum);
 
         for(int i= 0; i< doneNum; i++) {
-            new Thread(new Worker(start, done)).start();  // create and start threads
+//            new Thread(new Worker(start, done)).start();  // create and start threads
         }
 
         doSomeThing();   // don't let run yet
