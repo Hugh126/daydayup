@@ -1,5 +1,7 @@
 server:
-  port: 8981
+  port: 8081
+example:
+  loop: 11
 
 spring:
   redis:
@@ -9,8 +11,9 @@ spring:
     password:
     connect-timeout: 6000
 
-
-
+dubbo:
+  registry:
+    address: nacos://localhost:8848
 
 
 
