@@ -5,6 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 给定一个只包含小写字母字符串，每次可以选择两个相同的字符删除，并在字符串结尾新增任意一个小写字母。
+ * 请问最少多少次操作后，所有的字母都不相同？
+ */
+
 public class DoubleKill {
 
     private static int setLen = 0;
@@ -15,7 +20,7 @@ public class DoubleKill {
             return tCnt;
         }
         if (setLen < 26) {
-            if (aCnt <= 2) {
+            if (aCnt <= 1) {
                 return tCnt + 1;
             }else{
                 setLen ++;
