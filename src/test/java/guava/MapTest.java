@@ -1,28 +1,23 @@
 package guava;
 
+import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
+import com.google.common.collect.*;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -133,6 +128,64 @@ public class MapTest {
         assertThat(groups.get(3), containsInAnyOrder("Tom"));
         assertThat(groups.get(4), containsInAnyOrder("John", "Adam"));
     }
+
+    @Test
+    public void differenceMap() {
+        Map map1 = ImmutableMap.of("aa", 1, "bb", 2, "cc", 3, "dd", 4);
+        Map map2 = ImmutableMap.of("a1", 11, "bb", 22, "cc", 3, "dd", 44, "ee", 5);
+        MapDifference difference = Maps.difference(map1, map2);
+        // del
+        Assert.assertEquals(1, difference.entriesOnlyOnLeft().size());
+        // add
+        Assert.assertEquals(2, difference.entriesOnlyOnRight().size());
+        // update
+        Assert.assertEquals(2, difference.entriesDiffering().size());
+        // common
+        Assert.assertEquals(1, difference.entriesInCommon().size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void HashMap_merge1() {
+        List<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        Map<String, String> map = list.stream().collect(Collectors.toMap(item -> item, item -> {
+            if (item.equals("b")) {
+                return null;
+            }
+            return item;
+        }));
+    }
+
+    @Test
+    public void HashMap_merge2() {
+        List<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        Map<String, String> map2 = list.stream().collect(HashMap::new, (map, item) -> map.put(item, item.equals("b") ? null : item), HashMap::putAll);
+        Assert.assertEquals(map2.size(), 2);
+    }
+
+    @Test
+    public void nullKeyOrNullValue() {
+        Map map = new HashMap<>();
+        map.put(null, 1);
+        map.put(null, 2);
+        map.put(11, null);
+        map.put(22, null);
+        Assert.assertEquals(map.size(), 3);
+        System.out.println(JSONUtil.toJsonStr(map));
+        Gson gson = new Gson();
+        System.out.println(gson.toJson(map));
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            System.out.println(mapper.writeValueAsString(map));
+        } catch (JsonProcessingException e) {
+            // Null key for a Map not allowed in JSON (use a converting NullKeySerializer?)
+            e.printStackTrace();
+        }
+    }
+
 
     @Test
     public void test5() throws InterruptedException {
