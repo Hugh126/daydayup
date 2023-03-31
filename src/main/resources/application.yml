@@ -1,9 +1,13 @@
 server:
-  port: 8081
+  port: 8381
 example:
   loop: 11
 
 spring:
+  cache:
+    type: redis
+
+
   redis:
     database: 0
     host: localhost
