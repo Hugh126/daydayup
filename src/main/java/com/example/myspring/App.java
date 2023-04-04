@@ -6,12 +6,10 @@ import common.ExtendConfigTest;
 import multiThread.threadpool.ThreadPoolExecutorTest;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 
 @Import(ThreadPoolExecutorTest.class)
 @SpringBootApplication
-@EnableCaching
 public class App 
 {
     public static void main( String[] args )

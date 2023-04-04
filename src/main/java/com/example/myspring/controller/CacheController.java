@@ -47,15 +47,23 @@ public class CacheController {
 //    @Cacheable(key = "#id")
     @Cacheable(cacheNames = "getAllNames")
     public String getAll() {
-        log.warn("getAll");
+        log.warn("originally getAll");
         return data_map.values().stream().collect(Collectors.joining(","));
     }
+
+    @RequestMapping("/get2/{id}")
+    public String getWithAspectJ(@PathVariable Integer id) {
+        // 如果本地方法调用可以被拦截，那么就不会打印get
+        log.warn("getWithAspectJ {}", id);
+        return get(id);
+    }
+
 
     @RequestMapping("/get/{id}")
 //    @Cacheable(key = "#id")
     @Cacheable
     public String get(@PathVariable Integer id) {
-      log.warn("get {}", id);
+      log.warn("originally get {}", id);
       return data_map.get(id);
     }
 
@@ -63,7 +71,7 @@ public class CacheController {
 //    @CachePut(key = "#id")
     @CachePut
     public String add(@RequestParam Integer id, @RequestParam String name) {
-        log.warn("add {} {}", id, name);
+        log.warn("originally add {} {}", id, name);
         data_map.put(id, name);
         return name;
     }
@@ -72,7 +80,7 @@ public class CacheController {
 //    @CachePut(key = "#id")
     @CachePut
     public String update(@RequestParam Integer id, @RequestParam String name) {
-        log.warn("add {} {}", id, name);
+        log.warn("originally update {} {}", id, name);
         data_map.put(id, name);
         return name;
     }
@@ -80,7 +88,7 @@ public class CacheController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @CachePut
     public User save(@RequestBody User user) {
-        log.warn("save {}", user.getId());
+        log.warn("originally save {}", user.getId());
         data_map.put(user.getId(), user.getName());
         return user;
     }
@@ -90,7 +98,7 @@ public class CacheController {
     @CacheEvict
     @RequestMapping("/del/{id}")
     public String del(@PathVariable Integer id) {
-        log.warn("del {}", id);
+        log.warn("originally del {}", id);
         return data_map.remove(id);
     }
 

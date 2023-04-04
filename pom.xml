@@ -155,6 +155,19 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!--    为了使用aspectjweaver-->
+    <!--    AdviceMode.ASPECTJ-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+      <version>2.7.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+    </dependency>
+
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-cache</artifactId>
