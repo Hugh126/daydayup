@@ -6,6 +6,7 @@ example:
 spring:
   cache:
     type: redis
+#    type: SIMPLE
 
 
   redis:

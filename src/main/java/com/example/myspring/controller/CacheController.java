@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @RequestMapping("/user")
 @RestController
-@CacheConfig(cacheNames = "userCache", keyGenerator = "customKeyGenerator")
+@CacheConfig(cacheNames = "userCache")
 @Slf4j
 public class CacheController {
 
@@ -45,13 +45,13 @@ public class CacheController {
 
     @RequestMapping("/getAll")
 //    @Cacheable(key = "#id")
-    @Cacheable(cacheNames = "getAllNames")
+    @Cacheable
     public String getAll() {
         log.warn("originally getAll");
         return data_map.values().stream().collect(Collectors.joining(","));
     }
 
-    @RequestMapping("/get2/{id}")
+    @RequestMapping("/getWithAspectJ/{id}")
     public String getWithAspectJ(@PathVariable Integer id) {
         // 如果本地方法调用可以被拦截，那么就不会打印get
         log.warn("getWithAspectJ {}", id);
@@ -60,8 +60,8 @@ public class CacheController {
 
 
     @RequestMapping("/get/{id}")
-//    @Cacheable(key = "#id")
     @Cacheable
+//    @Cacheable(key = "#id")
     public String get(@PathVariable Integer id) {
       log.warn("originally get {}", id);
       return data_map.get(id);
