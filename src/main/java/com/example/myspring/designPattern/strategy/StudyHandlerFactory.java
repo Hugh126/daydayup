@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.EnumMap;
 
 @Component
@@ -23,7 +24,14 @@ public class StudyHandlerFactory implements InitializingBean, ApplicationContext
     @Override
     public void afterPropertiesSet() throws Exception {
         // 将handle注入到Application
-        appContext.getBeansOfType(IStudyHandle.class) .values().forEach(handle -> studyHandleMap.put(handle.getType(), handle));
+        Collection<IStudyHandle> values = appContext.getBeansOfType(IStudyHandle.class).values();
+        for (IStudyHandle handle : values) {
+            // mybatis注解把扫包路径下接口都代理了？
+            if (handle.getClass().getSuperclass().equals(java.lang.reflect.Proxy.class)) {
+                continue;
+            }
+            studyHandleMap.put(handle.getType(), handle);
+        }
     }
 
     @Override

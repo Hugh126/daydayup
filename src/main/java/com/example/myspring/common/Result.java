@@ -43,6 +43,7 @@ public class Result<T> implements Serializable {
 	public Result() {
 		System.out.println("Default Result Construct action.");
 	}
+
 	
 	public Result<T> error500(String message) {
 		this.message = message;

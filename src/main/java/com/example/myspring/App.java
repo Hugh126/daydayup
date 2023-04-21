@@ -4,12 +4,14 @@ import cn.hutool.core.lang.Assert;
 import com.example.myspring.extend.SpringContextUtils;
 import common.ExtendConfigTest;
 import multiThread.threadpool.ThreadPoolExecutorTest;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @Import(ThreadPoolExecutorTest.class)
 @SpringBootApplication
+@MapperScan("com.example.myspring")
 public class App 
 {
     public static void main( String[] args )

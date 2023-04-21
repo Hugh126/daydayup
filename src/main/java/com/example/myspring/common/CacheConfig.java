@@ -17,9 +17,12 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 
 @Configuration
-@EnableAsync(mode = AdviceMode.ASPECTJ)
-@EnableCaching(mode = AdviceMode.ASPECTJ)
-@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+@EnableCaching
+
+//@EnableAsync(mode = AdviceMode.ASPECTJ)
+//@EnableCaching(mode = AdviceMode.ASPECTJ)
+//@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+
 public class CacheConfig extends CachingConfigurerSupport {
 
 

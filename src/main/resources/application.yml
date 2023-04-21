@@ -4,10 +4,11 @@ example:
   loop: 11
 
 spring:
+  profiles:
+    active: dev
   cache:
     type: redis
 #    type: SIMPLE
-
 
   redis:
     database: 0
