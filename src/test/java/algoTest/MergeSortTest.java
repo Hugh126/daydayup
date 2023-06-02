@@ -50,7 +50,7 @@ public class MergeSortTest {
 
     @Test
     void flatmap() {
-        ArrayList<ArrayList<String>> lists = Lists.newArrayList(Lists.newArrayList("day1"), Lists.newArrayList("day2"), Lists.newArrayList("day3"));
+        ArrayList<ArrayList<String>> lists = Lists.newArrayList(Lists.newArrayList("day1", "Lili"), Lists.newArrayList("day2", "Qianqian"), Lists.newArrayList("day3", "Tt"));
         List<String> collect = lists.stream().flatMap(list -> list.stream()).collect(Collectors.toList());
         System.out.println(JSONUtil.toJsonStr(collect));
     }

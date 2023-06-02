@@ -1,5 +1,11 @@
 
+
+
 spring:
+  freemarker:
+    suffix=: .html
+
+
   datasource:
     url: jdbc:mysql://localhost:3306/erp
     username: root

@@ -75,7 +75,53 @@ public class ThreadTest {
 
 	}
 
+	static InheritableThreadLocal<String> local = new InheritableThreadLocal();
+	static ThreadLocal<String> local2 = new ThreadLocal();
 
+	@Test
+	public void test3() throws InterruptedException {
+		ExecutorService executor = Executors.newFixedThreadPool(3);
+//		new Thread(() -> {
+//			System.out.println("当前线程 "+Thread.currentThread().getName() + " 设置值");
+//			local.set("a");
+//			new Thread(() -> {
+//				System.out.println("子线程 " + Thread.currentThread().getName() + " 取值" + local.get());
+//			}).start();
+//		}).start();
+		TimeUnit.SECONDS.sleep(1L);
+		for (int i = 0; i <10 ; i++) {
+			final Integer x=i;
+			executor.submit(() -> {
+				if (x==0) {
+					local.set("a");
+				}
+				System.out.println("子线程 " + Thread.currentThread().getName() + " 取值" + local.get());
+			});
+		}
+		TimeUnit.SECONDS.sleep(10L);
+	}
 
+	static class MyThread extends Thread{
+		@Override
+		public void run() {
+			System.out.println("线程 " + Thread.currentThread().getName() + " 取值" + local.get() + " 取值2" + local2.get()) ;
+		}
 
+		public MyThread(ThreadGroup group, String name) {
+			super(group, name);
+		}
+	}
+
+	@Test
+	public void test4() {
+		ThreadGroup threadGroup = new ThreadGroup("prefix--");
+		new Thread(threadGroup, ()-> {
+			local.set("aaa");
+		}).start();
+		local2.set("bbb");
+		for (int i = 0; i <10 ; i++) {
+			new MyThread(threadGroup, "xx").start();
+		}
+
+	}
 }

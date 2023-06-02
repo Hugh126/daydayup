@@ -40,6 +40,12 @@
       <version>${mybatis-plus.version}</version>
     </dependency>
 
+    <!-- 引入freemarker模板引擎的依赖 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-freemarker</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid-spring-boot-starter</artifactId>

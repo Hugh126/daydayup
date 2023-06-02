@@ -19,7 +19,7 @@ public class SSERest {
 
     private static Map<String, SseEmitter> sseCache = new ConcurrentHashMap<>();
 
-    @GetMapping(path = "")
+    @GetMapping(path = "/index")
     public String index() {
         return "sseIndex";
     }

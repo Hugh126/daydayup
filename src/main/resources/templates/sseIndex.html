@@ -9,7 +9,8 @@
 </body>
 </html>
 <script>
-    var source = new EventSource('http://localhost:8081/sse/subscribe?id=data001');
+    console.log("--Sse测试文档--");
+    var source = new EventSource('http://localhost:8381/sse/subscribe?id=data001');
     source.onmessage = function (event) {
         text = document.getElementById('result').innerText;
         text += '\n' + event.data;
