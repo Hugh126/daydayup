@@ -3,6 +3,7 @@ package java8.concurrent;
 import cn.hutool.core.thread.NamedThreadFactory;
 import com.baomidou.mybatisplus.extension.api.R;
 import javafx.concurrent.Task;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
@@ -13,6 +14,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -87,6 +91,8 @@ public class FutureTaskTest {
 
     static AtomicInteger cnt = new AtomicInteger();
 
+
+
     /**
      * 怎么知道线程池任务执行完成
      * 1、线程内外通信
@@ -95,29 +101,22 @@ public class FutureTaskTest {
      */
     @Test
     public void batchAddThenGetTasks() throws InterruptedException {
-        int taskCnt = 10;
-        CountDownLatch countDownLatch = new CountDownLatch(taskCnt);
-        for (int i = 0; i < taskCnt; i++) {
-            executor.execute(() -> {
-                try {
-                    TimeUnit.SECONDS.sleep(1L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                cnt.incrementAndGet();
-                countDownLatch.countDown();
-            });
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        Function<Integer, Thread> supplier = index -> (new Thread(()-> {
+            try {
+                countDownLatch.await();
+                // do something
+                log.warn(Thread.currentThread().getName() + " : index " + index + " done" );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }));
+        IntStream.range(1, 11).mapToObj(x -> supplier.apply(x)).forEach(executorService::submit);
+        countDownLatch.countDown();
+        while (!executorService.awaitTermination(200L,TimeUnit.MILLISECONDS)) {
+            executorService.shutdown();
         }
-
-        while (cnt.get() < taskCnt) {
-            System.out.println("complated tasks " + cnt.get());
-            TimeUnit.SECONDS.sleep(2);
-        }
-        // 外层阻塞
-        countDownLatch.await();
-        System.out.println("[END] complated tasks " + cnt.get());
-        System.out.println("task done");
     }
-
 
 }
