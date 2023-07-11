@@ -1,6 +1,7 @@
 package com.example.myspring.polling;
 
 import cn.hutool.core.date.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +13,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
+@Slf4j
 @Controller
 @RequestMapping(path = "/sse")
 public class SSERest {
-
-    private static Map<String, SseEmitter> sseCache = new ConcurrentHashMap<>();
 
     @GetMapping(path = "/index")
     public String index() {
@@ -27,30 +28,31 @@ public class SSERest {
     @ResponseBody
     @GetMapping(path = "subscribe", produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
     public SseEmitter push(String id) throws IOException {
-        // 超时时间设置为3s，用于演示客户端自动重连
         SseEmitter sseEmitter = new SseEmitter(60000L);
-        // 设置前端的重试时间为1s
-        sseEmitter.send(SseEmitter.event().reconnectTime(3000).data("连接成功" +  DateUtil.now()));
-        doSomething();
-        sseEmitter.send(SseEmitter.event().reconnectTime(1000).data("推送消息111 " +  DateUtil.now()));
-        doSomething();
-        sseEmitter.send(SseEmitter.event().reconnectTime(2000).data("推送消息222 " +  DateUtil.now()));
-        sseCache.put(id, sseEmitter);
-        sseEmitter.onTimeout(() -> {
-            System.out.println(id + "超时");
-            sseCache.remove(id);
-        });
-        sseEmitter.onCompletion(() -> System.out.println("完成！！！"));
+        sseEmitter.onCompletion(() -> log.warn("[推送完成]"));
+        new Thread(() -> {
+            IntStream.range(1, 10).forEach(n -> {
+                try {
+                    sseEmitter.send(SseEmitter.event().data("推送消息 : " + n ));
+                    TimeUnit.MILLISECONDS.sleep(500L);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            });
+
+            try {
+                // 注意消息的data是必须填的，也不能为空
+                sseEmitter.send(SseEmitter.event().name("close").data("--anything but no null--"));
+                // 这里完全不是关闭，只是清空异步响应DeferredResult
+                sseEmitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
         return sseEmitter;
     }
 
 
-    private void doSomething() {
-        try {
-            TimeUnit.SECONDS.sleep(3L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

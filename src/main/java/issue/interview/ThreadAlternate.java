@@ -190,6 +190,7 @@ public class ThreadAlternate {
 
     /**
      * ReentrantLock
+     * @see <a href="https://zhuanlan.zhihu.com/p/517749666">深入浅出的重入锁</a>
      * two condition
      *
      */
@@ -325,8 +326,8 @@ public class ThreadAlternate {
 //        fun3();
 //        fun4();
 //        fun5();
-//        fun6();
-        fun7();
+        fun6();
+//        fun7();
 
  
     }

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <title>Sse测试文档</title>
+<!--    让页面不请求icon-->
+    <link rel="icon" href="data:image/ico;base64,aWNv">
 </head>
 <body>
 <div>sse测试</div>
@@ -9,18 +11,27 @@
 </body>
 </html>
 <script>
-    console.log("--Sse测试文档--");
-    var source = new EventSource('http://localhost:8381/sse/subscribe?id=data001');
-    source.onmessage = function (event) {
-        text = document.getElementById('result').innerText;
-        text += '\n' + event.data;
+    if (window.EventSource == null) {
+        alert('The browser does not support Server-Sent Events');
+    }else{
+        var source = new EventSource('http://localhost:8381/sse/subscribe?id=data001');
+        source.onmessage = function (event) {
+            refreshByData(event.data);
+        };
+        source.onopen = function (event) {
+            refreshByData('连接成功');
+        };
+        source.addEventListener("close", (event) => {
+            source.close();
+            refreshByData('连接关闭');
+        });
+    }
+
+    function refreshByData(data) {
+        var text = document.getElementById('result').innerText;
+        text += '\n' + data;
         document.getElementById('result').innerText = text;
-    };
-    <!-- 添加一个开启回调 -->
-    source.onopen = function (event) {
-        text = document.getElementById('result').innerText;
-        text += '\n 开启: ';
-        console.log(event);
-        document.getElementById('result').innerText = text;
-    };
+    }
+
+
 </script>

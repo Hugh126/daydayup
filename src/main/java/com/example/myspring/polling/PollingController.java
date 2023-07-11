@@ -20,7 +20,6 @@ import java.util.Collection;
  */
 @RequestMapping("/polling")
 @RestController
-@Slf4j
 public class PollingController {
 
     private final static Multimap<Integer, DeferredResult<String>> watchRequestMap = Multimaps.synchronizedMultimap(HashMultimap.create());
@@ -29,6 +28,9 @@ public class PollingController {
     @RequestMapping("watch/{id}")
     public DeferredResult<String> watch(@PathVariable Integer id) {
         DeferredResult<String> result = new DeferredResult<>(TIME_OUT);
+        result.onTimeout(() -> {
+            System.err.println("Task time out.");
+        });
         result.onCompletion(() -> {
             watchRequestMap.remove(id, result);
         });
@@ -44,5 +46,4 @@ public class PollingController {
             item.setResult(String.format("id=%d于%s更新完成", id, DateUtil.now()));
         });
     }
-
 }

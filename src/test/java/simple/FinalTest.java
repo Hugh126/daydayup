@@ -2,10 +2,14 @@ package simple;
 
 
 import com.example.myspring.entity.Stu;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  *
@@ -73,12 +77,15 @@ public class FinalTest {
 
     }
 
+    public static double add(double d1, double d2) {
+        return BigDecimal.valueOf(d1).add(BigDecimal.valueOf(d2)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
     @Test
     public void test3() {
-        System.out.println(System.identityHashCode(127));
-        System.out.println(System.identityHashCode(Integer.valueOf(127)));
-        System.out.println(System.identityHashCode(new Stu()));
-        System.out.println(System.identityHashCode(new Stu()));
-
+        Double x = Stream.of(10000000.11, 20000000.22, 30000000.33, 10000000.23).reduce(FinalTest::add).get();
+        System.out.println(String.format("%.2f", x));
     }
+
+
 }
