@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 
 @Import(ThreadPoolExecutorTest.class)
 @SpringBootApplication
-@MapperScan("com.example.myspring")
+@MapperScan("com.example.myspring.service")
 public class App 
 {
     public static void main( String[] args )
