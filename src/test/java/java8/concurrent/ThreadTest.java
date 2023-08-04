@@ -1,9 +1,12 @@
 package java8.concurrent;
 
+import cn.hutool.core.thread.ConcurrencyTester;
+import cn.hutool.core.thread.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.util.StopWatch;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -122,6 +125,20 @@ public class ThreadTest {
 		for (int i = 0; i <10 ; i++) {
 			new MyThread(threadGroup, "xx").start();
 		}
-
 	}
+
+	@Test
+	public void hutoolThread1() {
+		ConcurrencyTester concurrencyTester = ThreadUtil.concurrencyTest(10, () -> {
+			String name = Thread.currentThread().getName();
+			log.warn("[{}] start", name);
+			try {
+				TimeUnit.SECONDS.sleep(new Random().nextInt(5));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			log.warn("[{}] done", name);
+		});
+	}
+
 }

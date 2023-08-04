@@ -40,9 +40,7 @@ public class Result<T> implements Serializable {
 	 */
 	private long timestamp = System.currentTimeMillis();
 
-	public Result() {
-		System.out.println("Default Result Construct action.");
-	}
+	public Result() {}
 
 	
 	public Result<T> error500(String message) {

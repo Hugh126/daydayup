@@ -112,5 +112,8 @@ public class StreamTest {
 		System.out.println(JSONUtil.toJsonStr(collect));
 	}
 
-
+	@Test
+	public void skip() {
+		IntStream.range(1,10).skip(5).forEach(System.out::println);
+	}
 }
