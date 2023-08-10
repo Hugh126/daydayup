@@ -28,9 +28,12 @@ import java.util.stream.IntStream;
 
 
 /**
- * 测试
+ * 测试多线程事务
+ *
  * 1、手动事务提交
  * 2、多线程事务提交回滚
+ *
+ * 结论：多线程事务 is shit
  */
 @Slf4j
 @RestController
