@@ -114,4 +114,32 @@ public class ErpCityController {
         return Result.ok(end);
     }
 
+    @RequestMapping("batchUpdate")
+    public Result<?> batchUpdate() {
+        ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
+        CountDownLatch downLatch = new CountDownLatch(1);
+        IntStream.range(0, 1000).forEach(x-> {
+            executorService.execute(() -> {
+                try {
+                    downLatch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                erpCityService.decreaseLevel();
+            });
+        });
+        downLatch.countDown();
+        log.warn("开发并发更新任务");
+        long start = System.currentTimeMillis();
+        while (executorService.getCompletedTaskCount() < executorService.getTaskCount()) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(100l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        long t = System.currentTimeMillis()-start;
+        return Result.ok("1000个任务共花费ms: "+ t);
+    }
+
 }
