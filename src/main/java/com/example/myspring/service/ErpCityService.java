@@ -5,7 +5,10 @@ import com.example.myspring.entity.ErpCity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -53,5 +56,23 @@ public class ErpCityService extends ServiceImpl<ErpCityMapper, ErpCity> {
         }
         return true;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int querySelect() {
+        int level = cityMapper.queryLevel(1);
+        try {
+            TimeUnit.SECONDS.sleep(120L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return level;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateLevel() {
+        boolean flag = cityMapper.updateLevel(1);
+        return true;
+    }
+
 
 }

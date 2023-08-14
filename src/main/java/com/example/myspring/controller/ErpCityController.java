@@ -114,6 +114,21 @@ public class ErpCityController {
         return Result.ok(end);
     }
 
+    @RequestMapping("lockLine")
+    public Result<?> lockLine() {
+        int flag = erpCityService.querySelect();
+        return Result.ok("lock result=" + flag);
+    }
+
+
+    @RequestMapping("updateLevel")
+    public Result<?> updateLevel() {
+        boolean flag = erpCityService.updateLevel();
+        return Result.ok("update result = " + flag);
+    }
+
+
+
     @RequestMapping("batchUpdate")
     public Result<?> batchUpdate() {
         ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
