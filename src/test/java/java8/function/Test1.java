@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import common.TriConsumer;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,28 @@ public class Test1<T1, R1> {
         Supplier<String> provider = () -> "x";
         Consumer<String> consumer = s -> System.out.println(s);
         consumer.accept(provider.get());
+    }
+
+    private void templateMethod(TriConsumer triConsumer, Object... objects) {
+        System.out.println("step 1");
+        System.out.println("step 2");
+        if (triConsumer != null && objects != null && objects.length == 3) {
+            triConsumer.accept(objects[0], objects[1], objects[2]);
+        }
+        System.out.println("step 3");
+    }
+
+    /**
+     * 自定义FunctionalInterface函数接口，解耦方法嵌入
+     */
+    @Test
+    void consumerTest2() {
+        TriConsumer<Integer, String, Object> consumer = (Integer x, String y, Object z) -> {
+            System.out.println(x + "-" + y + z);
+        };
+        templateMethod(consumer, 1, "t2", 3.33);
+        System.out.println("------------");
+        templateMethod(null, null);
     }
 
 
