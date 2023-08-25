@@ -5,10 +5,8 @@ import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -116,4 +114,86 @@ public class StreamTest {
 	public void skip() {
 		IntStream.range(1,10).skip(5).forEach(System.out::println);
 	}
+
+	/**
+	 * repeat
+	 */
+	@Test
+	public void flatMapTest2() {
+		List<String> list = Arrays.asList("1234".split(""));
+		list.stream()
+				.flatMap(str -> list.stream().map(str::concat))
+				.flatMap(str -> list.stream().map(str::concat))
+				.flatMap(str -> list.stream().map(str::concat))
+				.collect(Collectors.toList())
+				.forEach(System.out::println);
+	}
+
+
+
+	// C(m, 3)
+	Set<String> contract(int m) {
+		Set<String> set = new HashSet<>();
+		for (int i = 1; i <= m; i++) {
+			for (int j = 1; j <= m; j++) {
+				if(j == i) {
+					continue;
+				}
+				for (int k = 1; k <= m; k++) {
+					if(i==k || j==k) {
+						continue;
+					}
+					Assert.assertNotEquals(i,j);
+					Assert.assertNotEquals(i,k);
+					Assert.assertNotEquals(j,k);
+					int[] arr = new int[]{i, j, k};
+					Arrays.sort(arr);
+					String sb = new StringBuffer().append(arr[0]).append(arr[1]).append(arr[2]).toString();
+					if (!set.contains(sb)) {
+						set.add(sb);
+					}
+				}
+			}
+		}
+		return set;
+	}
+
+	// C(m, 3)
+	Set<String> combination(int m, int[] numbers, int d) {
+		Set<String> set = new HashSet<>();
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < m; j++) {
+				if(j == i) continue;
+				for (int k = 0; k < m; k++) {
+					if(i==k || j==k) continue;
+					int[] arr = new int[]{numbers[i], numbers[j], numbers[k]};
+					Arrays.sort(arr);
+					int a0 = arr[0];
+					int a1 = arr[1];
+					int a2 = arr[2];
+					if (a2- a1 <= d && a1 - a0 <= d && a2-a0 <=d) {
+						String sb = new StringBuffer().append(a0).append(' ').append(a1).append(' ').append(a2).toString();
+						if (!set.contains(sb)) {
+							set.add(sb);
+						}
+					}
+				}
+			}
+		}
+		return set;
+	}
+
+	/**
+	 *  no repeat
+	 */
+	@Test
+	public void flatMapTest3() {
+//		int[] nums = {1 ,10, 20, 30, 50};
+		Set<String> set = contract(5);
+//		Set<String> set = combination(5, nums, 19);
+		set.stream().forEach(System.out::println);
+	}
+
+
+
 }
