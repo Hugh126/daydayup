@@ -39,7 +39,9 @@ public class HttpClientUtil {
         CloseableHttpClient client = HttpClients.createDefault();
         try {
             URIBuilder uriBuilder = new URIBuilder(url);
-            requestParam.forEach((k,v)-> uriBuilder.addParameter(k, v));
+            if(requestParam != null && !requestParam.isEmpty()) {
+                requestParam.forEach((k,v)-> uriBuilder.addParameter(k, v));
+            }
             HttpGet get = new HttpGet(uriBuilder.build());
             CloseableHttpResponse response = null;
             response = client.execute(get);
