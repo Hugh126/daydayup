@@ -17,6 +17,7 @@ spring:
     password:
     connect-timeout: 6000
 
+
 dubbo:
   registry:
     address: nacos://localhost:8848

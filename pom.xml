@@ -30,6 +30,17 @@
   <dependencies>
 
     <dependency>
+      <groupId>com.github.loki4j</groupId>
+      <artifactId>loki-logback-appender-jdk8</artifactId>
+      <version>1.4.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.14</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
@@ -154,13 +165,6 @@
       <groupId>org.example</groupId>
       <artifactId>mystarter</artifactId>
       <version>1.0-SNAPSHOT</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.12</version>
     </dependency>
 
 

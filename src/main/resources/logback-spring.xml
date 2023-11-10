@@ -3,6 +3,8 @@
 	<!--定义日志文件的存储地址 -->
 	<property name="LOG_HOME" value="/data/log" />
 	<property name="LOG_FILE_NAME" value="springboottest" />
+	<springProperty scope="context" name="appName" source="app.name" defaultValue="my-app"/>
+
 
 	<!-- 控制台输出 -->
 	<appender name="STDOUT"
@@ -44,6 +46,21 @@
 
 	</appender>
 
+	<appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+		<http class="com.github.loki4j.logback.ApacheHttpSender">
+			<url>http://192.168.188.131:3100/loki/api/v1/push</url>
+		</http>
+		<format>
+			<label>
+				<pattern>app=${appName},host=${HOSTNAME},level=%level</pattern>
+			</label>
+			<message>
+				<pattern>l=%level h=${HOSTNAME} c=%logger{20} t=%thread | %msg %ex</pattern>
+			</message>
+			<sortByTime>true</sortByTime>
+		</format>
+	</appender>
+
 	<!--myibatis log configure -->
 	<logger name="com.apache.ibatis" level="TRACE" />
 	<logger name="java.sql.Connection" level="DEBUG" />
@@ -54,6 +71,7 @@
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
+		<appender-ref ref="LOKI" />
 	</root>
 
 </configuration>
