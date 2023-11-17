@@ -6,6 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -102,6 +105,7 @@ public class StreamTest {
 	@Test
 	public void test4() {
 		String[] arr = new String[] {"aa", "bb", "cc"};
+		System.out.println(Arrays.stream(arr).collect(Collectors.toList()));
 		System.out.println(Stream.of(arr, arr).flatMap(Arrays::stream).collect(Collectors.toList()));
 
 		ArrayList<String> strList = Lists.newArrayList("1,2,3", "4,5,6");
@@ -112,7 +116,15 @@ public class StreamTest {
 
 	@Test
 	public void skip() {
-		IntStream.range(1,10).skip(5).forEach(System.out::println);
+		Date date = new Date();
+		LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		System.out.println("Date: " + date);
+		System.out.println("LocalDateTime: " + localDateTime);
+
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		System.out.println("LocalDate: " + localDate);
+
+//		IntStream.range(1,10).skip(5).forEach(System.out::println);
 	}
 
 	/**
@@ -121,12 +133,14 @@ public class StreamTest {
 	@Test
 	public void flatMapTest2() {
 		List<String> list = Arrays.asList("1234".split(""));
-		list.stream()
+		List<String> listAll = list.stream()
 				.flatMap(str -> list.stream().map(str::concat))
 				.flatMap(str -> list.stream().map(str::concat))
 				.flatMap(str -> list.stream().map(str::concat))
-				.collect(Collectors.toList())
-				.forEach(System.out::println);
+				.collect(Collectors.toList());
+		System.out.println(listAll.size());
+		Assert.assertEquals(listAll.size(), 4*3*2*1);
+//		listAll.forEach(System.out::println);
 	}
 
 

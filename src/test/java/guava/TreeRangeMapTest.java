@@ -40,6 +40,18 @@ public class TreeRangeMapTest {
         System.out.println("s=" + s);
         System.out.println(rangeMap.span());
     }
+
+    private Date gDate(int d) {
+        return DateUtil.parse(String.valueOf(d));
+    }
+
+    @Test
+    void test3() {
+        RangeMap<Date, String> rm = TreeRangeMap.create();
+        rm.put(Range.closed(gDate(20231001), gDate(20231030)), "123");
+        rm.putCoalescing(Range.closed(gDate(20231010), gDate(20231120)), "456");
+        System.out.println(rm.toString());
+    }
 }
 
 

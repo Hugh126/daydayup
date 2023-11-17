@@ -16,6 +16,8 @@
 		</encoder>
 	</appender>
 
+
+
 	<!-- 按照每天生成日志文件 -->
 	<appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
 

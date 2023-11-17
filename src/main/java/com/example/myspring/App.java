@@ -10,8 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.util.concurrent.TimeUnit;
-
 @Import(ThreadPoolExecutorTest.class)
 @SpringBootApplication
 @MapperScan("com.example.myspring.service")
@@ -26,15 +24,6 @@ public class App
         // @Import 导入IOC
         Assert.notNull(SpringContextUtils.getBean(ThreadPoolExecutorTest.class));
 
-        new Thread(()-> {
-            try {
-                TimeUnit.SECONDS.sleep(5L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Z z = SpringContextUtils.getBean(Z.class);
-            System.out.println("z=" + z);
-        }).start();
     }
 
 }
