@@ -1,6 +1,5 @@
 package com.example.myspring.kafka;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
 

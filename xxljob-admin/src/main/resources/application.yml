@@ -1,0 +1,80 @@
+server:
+  port: 9080
+  servlet:
+      context-path: /xxl-job-admin
+  #数据源配置
+spring:
+  application:
+    name: xxljobAdmin
+  datasource:
+    url: jdbc:mysql://localhost:3306/xxl_job?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 30
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 900000
+      connection-timeout: 10000
+      connection-test-query: SELECT 1
+  #邮箱配置
+  mail:
+    host: smtphz.qiye.163.com
+    port: 994
+    username: yinranxinwei@qq.com
+    password: zwass1314
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+  #MVC配置
+  mvc:
+    servlet:
+      load-on-startup: 0
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/static/
+  #freemarker配置
+  freemarker:
+    templateLoaderPath=classpath: /templates/
+    suffix: .ftl
+    charset: UTF-8
+    request-context-attribute: request
+    settings:
+      number_format: 0.##########
+#通用配置，开放端点
+management:
+  server:
+    servlet:
+      context-path: /actuator
+  health:
+    mail:
+      enabled: false
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:/mybatis-mapper/*Mapper.xml
+
+# xxljob Admin  配置
+xxl:
+  job:
+#    login:
+#      username: admin
+#      password: 123456
+    accessToken: default_token
+    i18n: zh_CN
+    #触发池
+    triggerpool:
+      fast:
+        max: 200
+      slow:
+        max: 100
+    logretentiondays: 30

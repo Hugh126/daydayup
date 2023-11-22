@@ -4,11 +4,11 @@
 //import wangzhen.consistenthash.HashService;
 //import wangzhen.consistenthash.IHashService;
 //
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.UUID;
+//import java.com.example.myspring.util.ArrayList;
+//import java.com.example.myspring.util.HashMap;
+//import java.com.example.myspring.util.List;
+//import java.com.example.myspring.util.Map;
+//import java.com.example.myspring.util.UUID;
 //
 ///**
 // * @Author hugh

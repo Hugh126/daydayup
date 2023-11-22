@@ -4,8 +4,6 @@ import cn.hutool.core.util.RandomUtil;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 

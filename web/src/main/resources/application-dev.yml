@@ -1,0 +1,35 @@
+spring:
+  cache:
+    type: redis
+    #    type: SIMPLE
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    connect-timeout: 6000
+  freemarker:
+    suffix=: .html
+  datasource:
+    url: jdbc:mysql://localhost:3306/erp?characterEncoding=UTF-8&useUnicode=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis-plus:
+  #  configuration:
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:com/example/myspring/service/**/xml/*Mapper.xml
+  global-config:
+    # 关闭MP3.0自带的banner
+    banner: false
+    db-config:
+      # 默认数据库表下划线命名
+      table-underline: true
+      # 不使用大写
+      capitalMode: false
+
+
+dubbo:
+  registry:
+    address: nacos://localhost:8848
