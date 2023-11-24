@@ -36,6 +36,7 @@
     <module>xxljob</module>
     <module>xxljob-admin</module>
     <module>web</module>
+    <module>minio</module>
   </modules>
 
 

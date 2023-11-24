@@ -1,0 +1,8 @@
+
+
+
+minio:
+  endpoint: http://172.16.90.164:5000 #Minio服务所在地址
+  bucketName: common #存储桶名称, 需要安装后在web界面创建
+  accessKey: admin #访问的key
+  secretKey: 123456 #访问的秘钥
