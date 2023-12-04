@@ -19,14 +19,19 @@ public class DynamicProxyDemo implements InvocationHandler {
         this.obj = obj;
     }
 
-    private  void doBefore() {};
+    private  void doBefore() {
+        System.out.println("--doBefore--");
+    };
 
-    private  void doAfter() {};
+    private  void doAfter() {
+        System.out.println("--doAfter--");
+    };
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         doBefore();
 
+        System.out.println("--invoke--");
         Object dynamicObject = method.invoke(obj, args);
 
         doAfter();
@@ -40,14 +45,11 @@ public class DynamicProxyDemo implements InvocationHandler {
      */
     public static void main(String[] args) {
         Calc calcImpl = new CalcSimpleImpl();
-
         DynamicProxyDemo dynamicProxyDemo = new DynamicProxyDemo(calcImpl);
 
         Calc proxy = (Calc) Proxy.newProxyInstance(calcImpl.getClass().getClassLoader(), calcImpl.getClass().getInterfaces(), dynamicProxyDemo);
 
-        System.out.println("DynamicProxyDemo " );
-
-        System.out.println( + proxy.add(1, 2));
+        System.out.println("result = " + proxy.add(1, 2));
 
     }
 
