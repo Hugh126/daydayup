@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- plugins必须放到environments前面，详见PageHelper官网 -->
+    <plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- 使用下面的方式配置参数，后面会有所有的参数介绍 -->
+<!--            <property name="param1" value="value1"/>-->
+        </plugin>
+    </plugins>
+    <environments default="local">
+        <environment id="local">
+            <!--配置事务的类型，使用本地事务策略-->
+            <transactionManager type="JDBC"></transactionManager>
+            <!--是否使用连接池 POOLED表示使用链接池，UNPOOLED表示不使用连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/erp?characterEncoding=UTF-8&amp;useUnicode=true"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="mappers/CityMapper.xml"></mapper>
+    </mappers>
+</configuration>

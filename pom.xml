@@ -30,6 +30,7 @@
     <module>xxljob-admin</module>
     <module>web</module>
     <module>minio</module>
+      <module>mybatiscode</module>
   </modules>
 
   <properties>

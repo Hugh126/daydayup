@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.myspring.CityMapper">
+
+    <select id="queryByName" parameterType="java.lang.String"
+            resultType="com.example.myspring.ErpCity">
+        select *
+        from erp_city
+        where name = #{name} order by name ;
+    </select>
+</mapper>
