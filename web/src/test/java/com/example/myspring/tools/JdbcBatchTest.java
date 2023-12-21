@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -65,27 +66,39 @@ public class JdbcBatchTest {
     }
 
 
+    /**
+     * 插入本地10w条数据，实验结果：
+     * 真批量：1s
+     * 假批量：超过6min，差别不止别人测试几十倍。这个差距应该是随着数据量不断放大的
+     */
     @Test
-    public void test2() {
-        TEntry u1 = TEntry.create("name1", "pass1", "email1");
-        TEntry u2 = TEntry.create("name2", "pass2", "email2");
-        TEntry u3 = TEntry.create("name3", "pass3", "email3");
-        ArrayList<TEntry> list = Lists.newArrayList(u1, u2, u3);
+    public void test2() throws SQLException {
+//        String url = "jdbc:mysql://localhost:3306/benchtest";
+        String url = "jdbc:mysql://localhost:3306/benchtest?rewriteBatchedStatements=true";
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(jdbcURL, username, password);
+            long start = System.currentTimeMillis();
+            connection = DriverManager.getConnection(url, username, password);
+            connection.setAutoCommit(false);
+            System.out.println("AutoCommit=" + connection.getAutoCommit());
             PreparedStatement statement = connection.prepareStatement("INSERT INTO user (email, pass, name) VALUES (?, ?, ?)");
-            for (TEntry t : list) {
-                statement.setString(1, t.getEmail());
-                statement.setString(2, t.getPass());
-                statement.setString(3, t.getName());
+            for (int i = 0; i < 500000; i++) {
+                statement.setString(1, "email"+i);
+                statement.setString(2, "pass"+i);
+                statement.setString(3, "name"+i);
                 statement.addBatch();
             }
             int[] updateCounts = statement.executeBatch();
-            log.warn("updateInsertResult = " + IntStream.of(updateCounts).mapToObj(Integer::toString).collect(Collectors.joining(",")));
-            connection.close();
+            connection.commit();
+            long end = System.currentTimeMillis();
+            System.out.println("updateCounts=" + updateCounts.length + " cost=" + (end-start)/1000);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            connection.rollback();
+        }finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
     }
 
@@ -137,8 +150,8 @@ public class JdbcBatchTest {
      */
     @Test
     public void streamFetchByTemplate() {
-        String url = "jdbc:mysql://localhost:3306/erp";
-//        String url = "jdbc:mysql://localhost:3306/erp?defaultfetchsize=-214783648";
+//        String url = "jdbc:mysql://localhost:3306/erp";
+        String url = "jdbc:mysql://localhost:3306/erp?defaultfetchsize=-214783648";
         DriverManagerDataSource dataSource = new DriverManagerDataSource(url, username, password);
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
