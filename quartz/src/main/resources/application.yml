@@ -1,0 +1,13 @@
+
+spring:
+  quartz:
+    job-store-type: memory
+    auto-startup: true
+    properties:
+      org:
+        quartz:
+          threadPool:
+            threadCount: 3
+            class: org.quartz.simpl.SimpleThreadPool
+
+
