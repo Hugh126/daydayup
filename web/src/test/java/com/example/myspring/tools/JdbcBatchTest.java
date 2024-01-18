@@ -1,18 +1,21 @@
 package com.example.myspring.tools;
 
-import com.google.common.collect.Lists;
+import com.mysql.cj.jdbc.JdbcPreparedStatement;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.Stopwatch;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -118,10 +121,9 @@ public class JdbcBatchTest {
         try {
             String erpUrl = "jdbc:mysql://localhost:3306/erp";
             connection = DriverManager.getConnection(erpUrl, username, password);
-            com.mysql.jdbc.PreparedStatement preparedStatement  = (com.mysql.jdbc.PreparedStatement)
-                    connection.prepareStatement("select * from erp_member_tag");
-            preparedStatement.enableStreamingResults();
-            ResultSet rs = preparedStatement.executeQuery();
+            JdbcPreparedStatement prepareStatement = (JdbcPreparedStatement) connection.prepareStatement("select * from erp_member_tag");
+            prepareStatement.enableStreamingResults();
+            ResultSet rs = prepareStatement.executeQuery();
             int i=1;
             while (rs.next()) {
                 if (i%10000==0) {

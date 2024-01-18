@@ -48,20 +48,20 @@
 
 	</appender>
 
-	<appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-		<http class="com.github.loki4j.logback.ApacheHttpSender">
-			<url>http://192.168.188.131:3100/loki/api/v1/push</url>
-		</http>
-		<format>
-			<label>
-				<pattern>app=${appName},host=${HOSTNAME},level=%level</pattern>
-			</label>
-			<message>
-				<pattern>l=%level h=${HOSTNAME} c=%logger{20} t=%thread | %msg %ex</pattern>
-			</message>
-			<sortByTime>true</sortByTime>
-		</format>
-	</appender>
+<!--	<appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">-->
+<!--		<http class="com.github.loki4j.logback.ApacheHttpSender">-->
+<!--			<url>http://192.168.188.131:3100/loki/api/v1/push</url>-->
+<!--		</http>-->
+<!--		<format>-->
+<!--			<label>-->
+<!--				<pattern>app=${appName},host=${HOSTNAME},level=%level</pattern>-->
+<!--			</label>-->
+<!--			<message>-->
+<!--				<pattern>l=%level h=${HOSTNAME} c=%logger{20} t=%thread | %msg %ex</pattern>-->
+<!--			</message>-->
+<!--			<sortByTime>true</sortByTime>-->
+<!--		</format>-->
+<!--	</appender>-->
 
 	<!--myibatis log configure -->
 	<logger name="com.apache.ibatis" level="TRACE" />

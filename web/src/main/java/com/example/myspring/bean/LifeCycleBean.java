@@ -1,10 +1,14 @@
 package com.example.myspring.bean;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +33,7 @@ import javax.annotation.PreDestroy;
 
  */
 @Component
+@Slf4j
 public class LifeCycleBean implements
 		BeanNameAware,
 		BeanFactoryAware,
@@ -44,44 +49,44 @@ public class LifeCycleBean implements
 
 	public LifeCycleBean() {
 		this.name="小小";
-		System.out.println("2. 构造方法被调用，name：" + name);
+		log.warn(("2. 构造方法被调用，name：" + name));
 	}
 
 	@Override
 	public void setBeanName(String name) {
-		System.out.println("5. BeanNameAware被调用, 获取到的beanName：" + name);
+		log.warn(("5. BeanNameAware被调用, 获取到的beanName：" + name));
 	}
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
-		System.out.println("6. BeanFactoryAware被调用，获取到beanFactory：" + beanFactory);
+		log.warn(("6. BeanFactoryAware被调用，获取到beanFactory：" + beanFactory));
 	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
-		System.out.println("7. ApplicationContextAware被调用，获取到ApplicationContextAware：" + applicationContext);
+		log.warn(("7. ApplicationContextAware被调用，获取到ApplicationContextAware：" + applicationContext));
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		System.out.println("9. afterPropertiesSet被调用");
+		log.warn(("9. afterPropertiesSet被调用"));
 	}
 
 	@PostConstruct
 	public void myInit() {
-		System.out.println("10. myInit自定义初始化方法被调用，name：" + getName());
+		log.warn(("10. myInit自定义初始化方法被调用，name：" + getName()));
 	}
 
 	@Override
 	public void destroy() throws Exception {
-		System.out.println("14. DisposableBean被调用");
+		log.warn(("14. DisposableBean被调用"));
 	}
 
 	@PreDestroy
 	public void myDestroy() {
-		System.out.println("13. destroy-method自定义销毁方法被调用");
+		log.warn(("13. destroy-method自定义销毁方法被调用"));
 	}
 
 	public String getName() {
