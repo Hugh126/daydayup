@@ -18,23 +18,28 @@ import java.util.Map;
 @Slf4j
 class ObjectFactoryTest {
 
-    private Map<String, Stu> container = new HashMap<>();
+    static class OFI implements ObjectFactory<String, Stu>{
+        private Map<String, Stu> container = new HashMap<>();
 
-    private Stu getOrCreate(String name, ObjectFactory<Stu> factory) {
-        return container.computeIfAbsent(name, k -> doCreate(k));
+        private Stu doCreate(String name){
+            log.warn("[do create]");
+            Stu city = new Stu();
+            city.setName(name);
+            return city;
+        }
+
+        @Override
+        public Stu getObject(String s) {
+            return container.computeIfAbsent(s, k -> doCreate(s));
+        }
     }
 
-    private Stu doCreate(String name){
-        log.warn("[do create]");
-        Stu city = new Stu();
-        city.setName(name);
-        return city;
-    }
 
     @Test
     public void test1() {
-        String aName = "a";
-        System.out.println(getOrCreate(aName, () -> doCreate(aName)).hashCode());
-        System.out.println(getOrCreate(aName, () -> doCreate(aName)).hashCode());
+        OFI ofi = new OFI();
+        System.out.println(ofi.getObject("a"));
+        System.out.println(ofi.getObject("b"));
+        System.out.println(ofi.getObject("a"));
     }
 }

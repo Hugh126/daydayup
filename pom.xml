@@ -32,6 +32,7 @@
     <module>minio</module>
       <module>mybatiscode</module>
     <module>quartz</module>
+    <module>jetcache</module>
   </modules>
 
   <properties>

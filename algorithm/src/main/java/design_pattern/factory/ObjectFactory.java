@@ -9,7 +9,7 @@ package design_pattern.factory;
  */
 
 @FunctionalInterface
-public interface ObjectFactory<T> {
+public interface ObjectFactory<T, R> {
 
-    T getObject();
+    R getObject(T t);
 }

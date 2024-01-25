@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>com.example.myspring</groupId>
+    <artifactId>springboottest</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example.myspring</groupId>
+  <artifactId>jetcache</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>jetcache</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <jetcache.version>2.7.0</jetcache.version>
+  </properties>
+
+  <dependencies>
+
+<!--    这个框架的兼容性实在太差了：参考：-->
+<!--    https://github.com/alibaba/jetcache/blob/master/docs/CN/Compatibility.md-->
+
+    <dependency>
+      <groupId>com.alicp.jetcache</groupId>
+      <artifactId>jetcache-starter-redis</artifactId>
+      <version>${jetcache.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+  </build>
+</project>
