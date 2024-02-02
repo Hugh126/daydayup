@@ -146,6 +146,8 @@ public class JdbcBatchTest {
     /**
      * [无论是设置setFetchSize(Integer.MIN_VALUE)或是URL中制定，就可以直接使用流式结果集， 很多blog中说的模拟两可]
      *
+     * JDBC-CONNECTOR 5.1.7  com.mysql.jdbc.RowDataCursor#fetchMoreRows
+     *
      * 如果使用RowMapper，则会将每一行读入内存，将其转换为对象，最终仍会OOM
      *
      * 解决办法： 使用RowCallbackHandler 自己处理结果集
@@ -157,7 +159,6 @@ public class JdbcBatchTest {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(url, username, password);
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-//        jdbcTemplate.setFetchSize(Integer.MIN_VALUE);
         AtomicInteger i = new AtomicInteger();
         jdbcTemplate.query("select * from erp_member_tag", new RowCallbackHandler() {
             @Override
