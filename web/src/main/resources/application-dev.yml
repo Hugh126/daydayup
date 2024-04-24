@@ -1,3 +1,8 @@
+
+logging:
+  level:
+    com.alibaba.druid: DEBUG
+
 spring:
   cache:
     type: redis
@@ -11,10 +16,35 @@ spring:
   freemarker:
     suffix=: .html
   datasource:
-    url: jdbc:mysql://localhost:3306/erp?characterEncoding=UTF-8&useUnicode=true
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      url: jdbc:mysql://localhost:3306/erp?characterEncoding=UTF-8&useUnicode=true
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      validation-query-timeout: 5
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      # 指定Druid监控的过滤器，包括stat,wall,slf4j
+      filters: stat,wall,slf4j
+      # 设置慢SQL的阈值,ms
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      stat-view-servlet:
+        enabled: true
+        loginUsername: admin
+        loginPassword: 123456
+#        localhost:${server.port}/druid/login.html
+      web-stat-filter:
+        enabled: true
 
 mybatis-plus:
   #  configuration:

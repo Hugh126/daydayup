@@ -37,6 +37,9 @@ public class HttpClientUtil {
 
     public static String get(String url, Map<String, String> requestParam ) {
         CloseableHttpClient client = HttpClients.createDefault();
+        if(url.startsWith("https")) {
+            client = createSSLClient();
+        }
         try {
             URIBuilder uriBuilder = new URIBuilder(url);
             if(requestParam != null && !requestParam.isEmpty()) {

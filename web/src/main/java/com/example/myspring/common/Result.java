@@ -29,6 +29,8 @@ public class Result<T> implements Serializable {
 	 * 返回代码
 	 */
 	private Integer code = 0;
+
+	private Double cost;
 	
 	/**
 	 * 返回数据对象 data

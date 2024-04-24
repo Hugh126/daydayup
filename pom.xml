@@ -33,6 +33,7 @@
       <module>mybatiscode</module>
     <module>quartz</module>
     <module>jetcache</module>
+      <module>sentinel</module>
   </modules>
 
   <properties>

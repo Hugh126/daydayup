@@ -1,4 +1,4 @@
-package java8.concurrent;
+package java8.concurrent.completeFuture;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
