@@ -3,6 +3,7 @@ package com.example.myspring.tools;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
+import com.mysql.cj.jdbc.JdbcStatement;
 import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 import org.apache.commons.lang.StringUtils;
 import org.junit.BeforeClass;
@@ -19,13 +20,16 @@ import java.util.Date;
 import java.util.*;
 
 public class PgStreamFetchTest {
+    // 提前确定大致区间数量，防止反复扩容
 
-//    final  static private Map<Integer, MemInfo> memInfoStat1 = new HashMap<>(Maps.newHashMapWithExpectedSize(37493061));
-//    final  static private Map<Integer, MemInfo> memInfoStat2 = new HashMap<>(Maps.newHashMapWithExpectedSize(31848989));
-//    final  static private Map<Integer, MemInfo> memInfoStat3 = new HashMap<>(Maps.newHashMapWithExpectedSize(28159284));
-    final  static private Map<Integer, MemInfo> memInfoStat4 = new HashMap<>(Maps.newHashMapWithExpectedSize(24033027));
-    final  static String dfs = "yyyy-MM-dd HH:mm:ss";
+    final  static int MAX_SIZE = 40000000;
+    final  static private Map<Integer, MemInfo> memInfoStat = new HashMap<>(Maps.newHashMapWithExpectedSize(MAX_SIZE));
+    final  static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * 打印JVM参数
+     * @throws Exception
+     */
     @BeforeClass
     public static void beforeClass() throws Exception {
         RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
@@ -33,13 +37,14 @@ public class PgStreamFetchTest {
     }
 
     private Double objSize(Object obj) {
-        return 0.0;
-//        double size = ObjectSizeCalculator.getObjectSize(obj)/1024.0/1024.0;
-//        return BigDecimal.valueOf(size).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        double size = ObjectSizeCalculator.getObjectSize(obj)/1024.0/1024.0;
+        return BigDecimal.valueOf(size).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private void batchInsert(int v, Collection<MemInfo> values){
-        System.out.println("--------------------------------" + v + "--------------------------------");
+        memInfoStat.clear();
+
+        System.out.println("--------------------------------批次 " + v + "--------------------------------");
         System.out.println("[TO Write Size=]" + values.size() + "size=" + objSize(values) + "M");
         System.out.println(LocalDateTime.now().toString() + "========= begin write");
         Iterator<MemInfo> iterator = values.iterator();
@@ -132,7 +137,6 @@ public class PgStreamFetchTest {
     }
 
     private java.util.Date parseDate(String str){
-        SimpleDateFormat dateFormat = new SimpleDateFormat(dfs);
         try {
             return dateFormat.parse(str);
         } catch (ParseException e) {
@@ -157,20 +161,28 @@ public class PgStreamFetchTest {
     }
 
     /**
-     * 1 分批防止OOM
-     * 2 优化： 可以将memInfoStat4 简化为1个，及时clear即可
+     * 分批流式获取并批量插入
+     *
+     * MySQL 的 JDBC 驱动本质上并不支持设置 fetchsize, 不管设置多大的 fetchsize, JDBC 驱动依然会将 select 的全部结果都读取到客户端后再处理
+     *
+     * 分批拉取放到内存处理，防止OOM
      * @throws SQLException
      */
     @Test
-    public void test1() throws SQLException {
-//        partFetch("member_id>80000000 and member_id <= 83000000", memInfoStat1);
-//        batchInsert(1, memInfoStat1.values());
-//        partFetch("member_id>83000000 and member_id <= 87000000", memInfoStat2);
-//        batchInsert(2, memInfoStat2.values());
-//        partFetch("member_id>87000000 and member_id <= 92000000", memInfoStat3);
-//        batchInsert(3, memInfoStat3.values());
-        partFetch("member_id>92000000", memInfoStat4);
-        batchInsert(4, memInfoStat4.values());
+    public void partStreamFetchAndBatchInsert() throws SQLException {
+        List<Integer> thresholdList = Arrays.asList(80000000, 83000000, 87000000, 92000000);
+        for (int i = 0; i < thresholdList.size() ; i++) {
+            Integer start = thresholdList.get(i);
+            String querySql;
+            if (i == thresholdList.size()-1) {
+                querySql = String.format("member_id > %d", start);
+            }else{
+                Integer end = thresholdList.get(i+1);
+                querySql = String.format("member_id > %d and member_id <= %d", start, end);
+            }
+            partFetch(querySql, memInfoStat);
+            batchInsert(i+1, memInfoStat.values());
+        }
     }
 
     private void partFetch(String sqlCondition, Map<Integer, MemInfo> statMap) {
@@ -179,11 +191,12 @@ public class PgStreamFetchTest {
         String url = "jdbc:postgresql://xxx/dw?ssl=false";
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(url, "dw", "DwHe1e3eureo");
+            connection = DriverManager.getConnection(url, "dw", "dw");
             connection.setAutoCommit(false);
-            Statement stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.FETCH_FORWARD);
-            stmt.setFetchSize(100000);
-            ResultSet rs = stmt.executeQuery("select member_id, to_char(crt_date, 'YYYY-MM-DD HH24:MI:SS') as crt_date, belong_store_id,  net_pay_price,coupon_seq from erp.erp_order " +
+            JdbcStatement statement = (JdbcStatement) connection.createStatement();
+            //  enableStreamingResults 会 setFetchSize(Integer.MIN_VALUE)
+            statement.enableStreamingResults();
+            ResultSet rs = statement.executeQuery("select member_id, to_char(crt_date, 'YYYY-MM-DD HH24:MI:SS') as crt_date, belong_store_id,  net_pay_price,coupon_seq from erp.erp_order " +
                     " where 1=1 " +
                     " and  " + sqlCondition +
                     " and status=2  order by crt_date");
@@ -198,7 +211,8 @@ public class PgStreamFetchTest {
                     statMap.put(memberId, mergeGpMem(gpMem, oldMem));
                 }
                 if (x%1000000 == 0){
-                    System.out.println("[rate]=" + NumberUtil.round(x/37493061.0, 2).doubleValue()*100 + "%");
+                    // 大致输出进度
+                    System.out.println("[rate]=" + NumberUtil.round(x*1.0/MAX_SIZE, 2).doubleValue()*100 + "%");
                 }
                 x++;
             }
