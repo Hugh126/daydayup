@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * 将两队任务组合
@@ -16,42 +16,51 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class CompletableFutureTest2 {
 
-    CompletableFuture<String> foo(String name, String id) {
+    List<String> task1ResultList = new ArrayList<>();
+
+    CompletableFuture<String> runTask1(String name) {
         return CompletableFuture.supplyAsync(() -> {
-            log.info("name={}-{}-",name,id);
-            return  id;
-        } );
+            log.info("taskName={}", name);
+            return name + "_Result_" + Thread.currentThread().getId();
+        }).handle((res, e) -> {
+            // 不侵入任务本身 收集结果
+            if (e == null) {
+                task1ResultList.add(res);
+            } else {
+                task1ResultList.add(e.getMessage());
+            }
+            return res;
+        });
     }
 
-    CompletableFuture<String> fun(CompletableFuture f, String name) {
-        return f.thenApplyAsync(t -> {
-            log.info("name={},t={}",name, t);
-            return t+" 1";
+    CompletableFuture<String> runTask2(CompletableFuture preTask, String name) {
+        return preTask.thenRunAsync(() -> {
+            log.info("taskName={}", name);
+            // 利用task1的结果 process
+            log.warn("preResult=" + task1ResultList.stream().collect(Collectors.joining(",")));
         });
     }
 
     @Test
-    void test3() throws ExecutionException, InterruptedException {
+    void test3() {
         // 1
         List<CompletableFuture> list1 = new ArrayList<>();
-        for(int i=0;i<10;i++) {
-            CompletableFuture cf1 = foo("task1","aa" + i);
+        for (int i = 0; i < 3; i++) {
+            CompletableFuture cf1 = runTask1("task1");
             list1.add(cf1);
         }
-        CompletableFuture[] arr = list1.toArray(new CompletableFuture[list1.size()]);
-        CompletableFuture<Void> f11 = CompletableFuture.allOf(arr);
+        CompletableFuture[] arr1 = list1.toArray(new CompletableFuture[list1.size()]);
+        CompletableFuture<Void> f11 = CompletableFuture.allOf(arr1);
 
 
         // 2
         List<CompletableFuture> list2 = new ArrayList<>();
-        for(int i=0;i<10;i++) {
-            CompletableFuture cf2 = fun( f11 , "task2");
+        for (int i = 0; i < 7; i++) {
+            CompletableFuture cf2 = runTask2(f11, "task2");
             list1.add(cf2);
         }
         CompletableFuture[] arr2 = list1.toArray(new CompletableFuture[list2.size()]);
         CompletableFuture.allOf(arr2).join();
-
     }
-
 
 }
