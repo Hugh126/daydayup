@@ -1,6 +1,7 @@
 package com.example.myspring;
 
 
+import com.example.myspring.event.MyEvent;
 import com.example.myspring.extend.SpringContextUtils;
 import common.ExtendConfigTest;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ public class DayDayStart
         Assert.notNull(SpringContextUtils.getBean(ExtendConfigTest.class));
         // @Import 导入IOC
         Assert.notNull(SpringContextUtils.getBean(ThreadPoolExecutorTest.class));
+
+        // SpringEvent
+        SpringContextUtils.getApplicationContext().publishEvent(new MyEvent(DayDayStart.class, "hongzm"));
 
     }
 

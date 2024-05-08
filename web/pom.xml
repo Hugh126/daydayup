@@ -21,6 +21,12 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>${druid.version}</version>
+    </dependency>
+
     <!-- mybatis-plus -->
     <dependency>
       <groupId>com.baomidou</groupId>
