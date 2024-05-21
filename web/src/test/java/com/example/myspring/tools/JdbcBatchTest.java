@@ -43,6 +43,35 @@ public class JdbcBatchTest {
     }
 
     @Test
+    public void sessionSqlMode() {
+        String jdbcURL2 = "jdbc:mysql://localhost:3306/erp?sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'";
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(jdbcURL2, username, password);
+            Statement statement = connection.createStatement();
+            ResultSet sessionRS = statement.executeQuery("select @@SESSION.sql_mode");
+            if (sessionRS.next()){
+                System.out.println(sessionRS.getString(1));
+                sessionRS.close();
+            }
+            ResultSet globalRS = statement.executeQuery("select @@GLOBAL.sql_mode;");
+            if (globalRS.next()){
+                System.out.println(globalRS.getString(1));
+                globalRS.close();
+
+            }
+            connection.close();
+        } catch ( SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            ex.printStackTrace();
+        }
+    }
+
+    @Test
     public void test1() {
         Connection connection = null;
         try {
