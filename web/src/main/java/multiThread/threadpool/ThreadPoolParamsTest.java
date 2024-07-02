@@ -16,7 +16,7 @@ public class ThreadPoolParamsTest {
                                       0L,TimeUnit.MILLISECONDS,
                                       new LinkedBlockingQueue<Runnable>());
 
-    private static String poolStatus(ThreadPoolExecutor executor){
+    public static String poolStatus(ThreadPoolExecutor executor){
         BlockingQueue<Runnable> queue = executor.getQueue();
         return String.join(" ", "核心线程数:" + executor.getCorePoolSize(),
                 "活动线程数："+executor.getActiveCount(),
