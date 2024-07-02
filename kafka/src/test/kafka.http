@@ -1,0 +1,12 @@
+POST http://localhost:7003/api/kafka/publish
+Content-Type: application/json
+
+{
+  "messageId":  "mgs009",
+  "timestamp": 202407021422,
+  "source": "boottest",
+  "payload": {
+    "name" : "xiaohong",
+    "age": 18
+  }
+}
