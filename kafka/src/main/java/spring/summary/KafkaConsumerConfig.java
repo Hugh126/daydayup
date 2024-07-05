@@ -37,6 +37,9 @@ public class KafkaConsumerConfig {
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, CustomDeserializer.class.getName());
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class.getName());
 
+        // Enable batch processing
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 2);
+
         // JSON deserializer settings
         props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, KafkaMessage.class.getName());
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
@@ -51,6 +54,10 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, KafkaMessage> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, KafkaMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+
+        // Enable batch listening
+        factory.setBatchListener(true);
+
         // 手动提交偏移量
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
