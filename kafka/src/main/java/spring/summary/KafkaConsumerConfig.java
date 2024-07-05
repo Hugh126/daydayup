@@ -1,5 +1,6 @@
 package spring.summary;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
@@ -18,6 +20,7 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
+@Slf4j
 public class KafkaConsumerConfig {
 
 
@@ -50,6 +53,7 @@ public class KafkaConsumerConfig {
 
     }
 
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, KafkaMessage> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, KafkaMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -58,9 +62,23 @@ public class KafkaConsumerConfig {
         // Enable batch listening
         factory.setBatchListener(true);
 
+        /**
+         * Error Handle, Default
+         * @see org.springframework.kafka.listener.LoggingErrorHandler
+         */
+        factory.setErrorHandler(errorHandler());
+
         // 手动提交偏移量
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
+    }
+
+    @Bean
+    public ErrorHandler errorHandler() {
+        return (thrownException, records) -> {
+            // Handle the error (log, retry, etc.)
+            log.error("Error in process with Exception {} and the record is {}", thrownException, records);
+        };
     }
 
 
