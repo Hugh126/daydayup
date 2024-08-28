@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -63,4 +64,65 @@ public class CompletableFutureTest2 {
         CompletableFuture.allOf(arr2).join();
     }
 
+
+    /**
+     * 已知一个业务查询操作涉及 3 个 RPC 服务调用 : query1, query2, query3, 其中
+     * query1 耗时约 1 秒， query2 耗时约 0.5 秒，query3 耗时约 0.6 秒，且 query3查询条件依赖 query2 的查询结果，
+     * 请编写代码，使该业务查询总体耗时最小
+     *
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @Test
+    void testJoinAndGet() throws ExecutionException, InterruptedException {
+        long startTime = System.currentTimeMillis();
+
+        // 模拟异步调用 query1
+        CompletableFuture<String> query1Future = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000); // 模拟 query1 耗时 1 秒
+                System.out.println("query1 completed");
+                return "query1 result";
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+
+        // 模拟异步调用 query2
+        CompletableFuture<String> query2Future = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(500); // 模拟 query2 耗时 0.5 秒
+                System.out.println("query2 completed");
+                return "query2 result";
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+
+        // query3 依赖于 query2 的结果
+        CompletableFuture<String> query3Future = query2Future.thenApply(result -> {
+            try {
+                Thread.sleep(600); // 模拟 query3 耗时 0.6 秒
+                System.out.println("query3 completed using " + result);
+                return "query3 result";
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+
+        // 等待 query1 和 query3 都完成，并获取结果
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(query1Future, query3Future);
+        allOf.get();
+
+        // 获取各个查询的结果
+        String result1 = query1Future.get();
+        String result3 = query3Future.get();
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total time: " + (endTime - startTime) + " ms");
+        System.out.println("Final results: query1=" + result1 + ", query3=" + result3);
+    }
 }
