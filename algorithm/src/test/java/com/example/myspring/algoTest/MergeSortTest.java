@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * 归并排序，合并两个有序子集
@@ -41,6 +42,12 @@ public class MergeSortTest {
     void test1() {
         int[] arr = sort();
         System.out.println(IntStream.of(arr).mapToObj(a -> "" + a).collect(Collectors.joining(",", "[", "]")));
+    }
+
+    @Test
+    void wordCount0() {
+        String[] split = "Hello".split("");
+        System.out.println(Stream.of(split).distinct().count());
     }
 
 
