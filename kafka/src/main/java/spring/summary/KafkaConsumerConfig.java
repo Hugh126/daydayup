@@ -3,6 +3,7 @@ package spring.summary;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.logging.log4j.util.BiConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.BatchErrorHandler;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
@@ -62,11 +64,11 @@ public class KafkaConsumerConfig {
         // Enable batch listening
         factory.setBatchListener(true);
 
-        /**
+        /**version=
          * Error Handle, Default
          * @see org.springframework.kafka.listener.LoggingErrorHandler
          */
-        factory.setErrorHandler(errorHandler());
+        factory.setBatchErrorHandler(batchErrorHandler());
 
         // 手动提交偏移量
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
@@ -74,12 +76,14 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ErrorHandler errorHandler() {
+    public BatchErrorHandler batchErrorHandler() {
         return (thrownException, records) -> {
             // Handle the error (log, retry, etc.)
             log.error("Error in process with Exception {} and the record is {}", thrownException, records);
         };
     }
+
+
 
 
 }
