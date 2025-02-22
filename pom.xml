@@ -35,6 +35,8 @@
     <module>jetcache</module>
       <module>sentinel</module>
     <module>flowable</module>
+      <module>nacos-springcloud-client</module>
+    <module>nacos-springcloud-server</module>
   </modules>
 
   <properties>

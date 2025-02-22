@@ -1,0 +1,31 @@
+
+logging:
+  level:
+    root: INFO
+    # 将 Feign 客户端接口所在包设置为 DEBUG
+    com.example.myspring.service.FeignClientService: DEBUG
+
+spring:
+  application:
+    name: springcloud-nacos-consumer # 项目名称（nacos 注册的服务名）
+  cloud:
+    nacos:
+      discovery:
+        username: nacos
+        password: nacos
+        server-addr: 127.0.0.1:8848
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: full
+
+            
+server:
+  port: ${PORT:20001}
+
+
+
+

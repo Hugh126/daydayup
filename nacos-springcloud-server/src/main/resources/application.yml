@@ -1,0 +1,12 @@
+
+spring:
+  application:
+    name: springcloud-nacos-provider # 项目名称（nacos 注册的服务名）
+  cloud:
+    nacos:
+      discovery:
+        username: nacos
+        password: nacos
+        server-addr: 127.0.0.1:8848 # nacos 服务端地址
+server:
+  port: ${PORT:10001}
